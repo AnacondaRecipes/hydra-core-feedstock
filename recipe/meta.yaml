@@ -10,7 +10,6 @@ source:
   sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
 
 build:
-  noarch: python
   number: 0
   script:
     - {{ PYTHON }} setup.py antlr
