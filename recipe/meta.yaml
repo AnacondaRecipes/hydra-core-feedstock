@@ -45,12 +45,17 @@ test:
     - pytest -v -W ignore::DeprecationWarning tests/
 
 about:
-  home: https://hydra.cc/
+  home: https://hydra.cc
   license: MIT
   license_family: MIT
   license_file: LICENSE
   summary: A framework for elegantly configuring complex applications
-  doc_url: https://hydra.cc/docs/intro/
+  description: |
+    Hydra is an open-source Python framework that simplifies the development of research and other complex
+    applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and
+    override it through config files and the command line. The name Hydra comes from its ability to run multiple
+    similar jobs - much like a Hydra with multiple heads.
+  doc_url: https://hydra.cc/docs/intro
   dev_url: https://github.com/facebookresearch/hydra
 
 extra:
