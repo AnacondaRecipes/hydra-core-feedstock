@@ -6,29 +6,31 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
+    folder: pypi-upstream
+  - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v1.3.2.tar.gz
+    sha256: 3f0f14305e9c6ae4b1dbcba344fe09dd0fc79c0a0656470c249f4f7ca46bf471
+    folder: test-assets
 
 build:
   number: 0
   script:
-    - {{ PYTHON }} setup.py antlr
-    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+    #- {{ PYTHON }} setup.py antlr
+    - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv
 
 requirements:
-  build:
-    - antlr ==4.9.*
   host:
+    - antlr 4.13.2
     - python
     - pip
+    - openjdk
   run:
     - python
     - omegaconf >=2.2,<2.4
-    - antlr-python-runtime ==4.9.*
+    - antlr4-python3-runtime >=4.9
     - packaging
-    # importlib_resources is only needed for Python <3.9, but can't
-    # specify that with `noarch`
-    - importlib_resources
+    - importlib_resources  # [py<39]
 
 test:
   imports:
@@ -36,19 +38,18 @@ test:
   requires:
     - pytest
   source_files:
-    - hydra
-    - tests
-    - examples
-    - pytest.ini
-    - ATTRIBUTION
+    - test-assets/tests
+    - test-assets/ATTRIBUTION
+    - test-assets/pytest.ini
   commands:
-    - pytest -v -W ignore::DeprecationWarning tests/
+    - cd test-assets/tests
+    - pytest -v -W ignore::DeprecationWarning .
 
 about:
   home: https://hydra.cc
   license: MIT
   license_family: MIT
-  license_file: LICENSE
+  license_file: pypi-upstream/LICENSE
   summary: A framework for elegantly configuring complex applications
   description: |
     Hydra is an open-source Python framework that simplifies the development of research and other complex
