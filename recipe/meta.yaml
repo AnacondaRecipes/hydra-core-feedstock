@@ -8,6 +8,10 @@ package:
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
     sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
+    patches:
+    # do not forget to update the version literal in the antlr-*-complete.jar string inside the
+    # patch to correctly unvendor antlr and use the antlr package from conda
+      - 0000-unvendor_antlr.patch
     folder: pypi-upstream
   - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v1.3.2.tar.gz
     sha256: 3f0f14305e9c6ae4b1dbcba344fe09dd0fc79c0a0656470c249f4f7ca46bf471
@@ -16,19 +20,23 @@ source:
 build:
   number: 0
   script:
-    #- {{ PYTHON }} setup.py antlr
     - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv
 
 requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
-    - antlr 4.13.2
+    - antlr 4.9.3
     - python
     - pip
     - openjdk
   run:
     - python
     - omegaconf >=2.2,<2.4
-    - antlr4-python3-runtime >=4.9
+    # minor versions are introducing breaking changes (another version was tried, e.g. 4.13.* and implementation
+    # turned out to be incompatible)
+    - antlr4-python3-runtime >=4.9,<4.10
     - packaging
     - importlib_resources  # [py<39]
 
