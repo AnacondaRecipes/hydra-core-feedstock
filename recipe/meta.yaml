@@ -47,6 +47,7 @@ test:
     - pytest
   source_files:
     - test-assets/tests
+    - test-assets/examples
     - test-assets/ATTRIBUTION
     - test-assets/pytest.ini
   commands:
