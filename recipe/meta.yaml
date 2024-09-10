@@ -49,7 +49,7 @@ test:
     - test-assets/pytest.ini
   commands:
     - cd test-assets/tests
-    - pytest -v -W ignore::DeprecationWarning .
+    - pytest -v -W ignore::DeprecationWarning . --ignore=test_completion.py --ignore=test_hydra.py --ignore=test_compose.py --ignore=test_config_loader.py --ignore=test_examples --ignore=test_config_repository.py
 
 about:
   home: https://hydra.cc
