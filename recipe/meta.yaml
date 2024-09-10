@@ -27,16 +27,14 @@ requirements:
     - patch  # [not win]
     - m2-patch  # [win]
   host:
-    - antlr 4.9.3
+    - antlr ==4.9.*
     - python
     - pip
     - openjdk
   run:
     - python
     - omegaconf >=2.2,<2.4
-    # minor versions are introducing breaking changes (another version was tried, e.g. 4.13.* and implementation
-    # turned out to be incompatible)
-    - antlr4-python3-runtime >=4.9,<4.10
+    - antlr4-python3-runtime ==4.9.*
     - packaging
     - importlib_resources  # [py<39]
 
