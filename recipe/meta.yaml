@@ -22,7 +22,7 @@ build:
   script:
     - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv
   # skipping python 312 since missing antlr4-python3-runtime
-  skip: true  # [py>311]
+  skip: true  # [py>311 or s390x]
 
 requirements:
   build:
@@ -33,6 +33,8 @@ requirements:
     - python
     - pip
     - openjdk
+    - wheel
+    - setuptools
   run:
     - python
     - omegaconf >=2.2,<2.4
@@ -48,9 +50,11 @@ test:
   source_files:
     - test-assets/tests
     - test-assets/examples
+    - test-assets/hydra
     - test-assets/ATTRIBUTION
     - test-assets/pytest.ini
   commands:
+    - pip check
     - cd test-assets/tests
     #- pytest -v -W ignore::DeprecationWarning . --ignore=test_completion.py --ignore=test_hydra.py --ignore=test_compose.py --ignore=test_config_loader.py --ignore=test_examples --ignore=test_config_repository.py
     - pytest -v -W ignore::DeprecationWarning .
