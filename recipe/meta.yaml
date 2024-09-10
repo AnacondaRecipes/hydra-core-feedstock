@@ -47,6 +47,7 @@ test:
     - hydra
   requires:
     - pytest
+    - pip
   source_files:
     - test-assets/tests
     - test-assets/examples
@@ -56,7 +57,6 @@ test:
   commands:
     - pip check
     - cd test-assets/tests
-    #- pytest -v -W ignore::DeprecationWarning . --ignore=test_completion.py --ignore=test_hydra.py --ignore=test_compose.py --ignore=test_config_loader.py --ignore=test_examples --ignore=test_config_repository.py
     - pytest -v -W ignore::DeprecationWarning .
 about:
   home: https://hydra.cc
