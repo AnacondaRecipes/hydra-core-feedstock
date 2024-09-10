@@ -1,5 +1,6 @@
 {% set name = "hydra-core" %}
 {% set version = "1.3.2" %}
+{% set antlr_version = "4.9.3" %}
 
 package:
   name: {{ name|lower }}
@@ -9,8 +10,6 @@ source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
     sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
     patches:
-    # do not forget to update the version literal in the antlr-*-complete.jar string inside the
-    # patch to correctly unvendor antlr and use the antlr package from conda
       - 0000-unvendor_antlr.patch
     folder: pypi-upstream
   - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v1.3.2.tar.gz
@@ -23,13 +22,17 @@ build:
     - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv
   # skipping python 312 since missing antlr4-python3-runtime
   skip: true  # [py>311 or s390x]
+  script_env:
+    # this environment variable is used in the antlr-*-complete.jar string inside the
+    # patch to correctly unvendor antlr and use the antlr package from conda
+    - ANTLR_VERSION={{ antlr_version }}
 
 requirements:
   build:
     - patch  # [not win]
     - m2-patch  # [win]
   host:
-    - antlr ==4.9.*
+    - antlr =={{ antlr_version }}
     - python
     - pip
     - openjdk
@@ -38,7 +41,7 @@ requirements:
   run:
     - python
     - omegaconf >=2.2,<2.4
-    - antlr4-python3-runtime ==4.9.*
+    - antlr4-python3-runtime =={{ antlr_version }}
     - packaging
     - importlib_resources  # [py<39]
 
