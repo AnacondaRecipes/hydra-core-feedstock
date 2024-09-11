@@ -19,7 +19,8 @@ source:
 build:
   number: 0
   script:
-    - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv
+    - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv   # [not win]
+    - {{ PYTHON }} -m pip install %SRC_DIR%/pypi-upstream --no-deps --no-build-isolation -vv  # [win]
   # skipping python 312 since missing antlr4-python3-runtime
   skip: true  # [py>311 or s390x]
   script_env:
