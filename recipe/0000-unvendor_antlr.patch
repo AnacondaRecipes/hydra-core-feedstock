@@ -1,5 +1,5 @@
---- pypi-upstream/build_helpers/build_helpers.py	2024-09-06 16:54:09.640879247 +0200
-+++ pypi-upstream/build_helpers/build_helpers.py	2024-09-06 16:26:54.958978440 +0200
+--- build_helpers.py	2024-09-06 16:26:54.958978440 +0200
++++ build_helpers.py	2024-09-11 14:00:53.998190280 +0200
 @@ -176,7 +176,7 @@
  
      def run(self) -> None:
@@ -9,12 +9,16 @@
          project_root = abspath(dirname(basename(__file__)))
          for grammar in [
              "hydra/grammar/OverrideLexer.g4",
-@@ -185,7 +185,7 @@
+@@ -185,10 +185,10 @@
              command = [
                  "java",
                  "-jar",
 -                join(root_dir, "bin/antlr-4.9.3-complete.jar"),
-+                join(root_dir, f"lib/antlr4-{os.environ['ANTLR_VERSION']}-complete.jar"),
++                join(root_dir, "lib", "antlr4-{os.environ['ANTLR_VERSION']}-complete.jar"),
                  "-Dlanguage=Python3",
                  "-o",
-                 join(project_root, "hydra/grammar/gen/"),
+-                join(project_root, "hydra/grammar/gen/"),
++                join(project_root, "hydra", "grammar", "gen"),
+                 "-Xexact-output-dir",
+                 "-visitor",
+                 join(project_root, grammar),
