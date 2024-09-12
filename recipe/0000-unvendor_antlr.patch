@@ -1,6 +1,28 @@
---- build_helpers.py	2024-09-06 16:26:54.958978440 +0200
-+++ build_helpers.py	2024-09-11 14:00:53.998190280 +0200
-@@ -176,7 +176,7 @@
+--- build_helpers/build_helpers.py	2024-09-06 16:26:54.958978440 +0200
++++ build_helpers/build_helpers.py	2024-09-12 12:59:23.481117633 +0200
+@@ -100,16 +100,16 @@
+     def run(self) -> None:
+         files = find(
+             ".",
+-            include_files=["^hydra/grammar/gen/.*"],
++            include_files=["^hydra.grammar.gen..*"],
+             include_dirs=[
+                 "\\.egg-info$",
+                 "^.pytest_cache$",
+-                ".*/__pycache__$",
+-                ".*/multirun$",
+-                ".*/outputs$",
++                ".*.__pycache__$",
++                ".*.multirun$",
++                ".*.outputs$",
+                 "^build$",
+             ],
+-            scan_exclude=["^.git$", "^.nox/.*$", "^website/.*$"],
++            scan_exclude=["^.git$", "^.nox..*$", "^website..*$"],
+             excludes=[".*\\.gitignore$"],
+         )
+ 
+@@ -176,19 +176,19 @@
  
      def run(self) -> None:
          """Run command."""
@@ -8,8 +30,11 @@
 +        root_dir = os.environ['PREFIX']
          project_root = abspath(dirname(basename(__file__)))
          for grammar in [
-             "hydra/grammar/OverrideLexer.g4",
-@@ -185,10 +185,10 @@
+-            "hydra/grammar/OverrideLexer.g4",
+-            "hydra/grammar/OverrideParser.g4",
++            join("hydra","grammar","OverrideLexer.g4"),
++            join("hydra","grammar","OverrideParser.g4"),
+         ]:
              command = [
                  "java",
                  "-jar",
