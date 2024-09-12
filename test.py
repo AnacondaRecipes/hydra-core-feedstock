@@ -25,9 +25,15 @@ __all__ = ["normcase","isabs","join","splitdrive","split","splitext",
 
 def _get_sep(path):
     if isinstance(path, bytes):
-        return b'/'
+        if os.name == 'nt':
+            return b'\\'
+        else:
+            return b'/'
     else:
-        return '/'
+        if os.name == 'nt':
+            return '\\'
+        else:
+            return '/'
 
 # Normalize the case of a pathname.  Trivial in Posix, string.lower on Mac.
 # On MS-DOS this may also turn slashes into backslashes; however, other
