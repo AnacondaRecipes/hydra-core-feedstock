@@ -10,17 +10,16 @@ source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
     sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
     patches:
-      - 0000-unvendor_antlr.patch
+      - patches/0000-unvendor_antlr.patch
     folder: pypi-upstream
-  - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v1.3.2.tar.gz
+  - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 3f0f14305e9c6ae4b1dbcba344fe09dd0fc79c0a0656470c249f4f7ca46bf471
     folder: test-assets
 
 build:
   number: 0
   script:
-    - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv   # [not win]
-    - {{ PYTHON }} -m pip install %SRC_DIR%/pypi-upstream --no-deps --no-build-isolation -vv  # [win]
+    - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv
   # skipping python 312 since missing antlr4-python3-runtime
   skip: true  # [py>311 or s390x]
   script_env:
