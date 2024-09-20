@@ -11,7 +11,6 @@ source:
     sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
     patches:
       - patches/0000-unvendor_antlr.patch
-    folder: pypi-upstream
   - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 3f0f14305e9c6ae4b1dbcba344fe09dd0fc79c0a0656470c249f4f7ca46bf471
     folder: test-assets
@@ -19,7 +18,7 @@ source:
 build:
   number: 0
   script:
-    - {{ PYTHON }} -m pip install $SRC_DIR/pypi-upstream --no-deps --no-build-isolation -vv
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   # skipping python 312 since missing antlr4-python3-runtime
   skip: true  # [py>311 or s390x]
   script_env:
@@ -65,7 +64,7 @@ about:
   home: https://hydra.cc
   license: MIT
   license_family: MIT
-  license_file: pypi-upstream/LICENSE
+  license_file: LICENSE
   summary: A framework for elegantly configuring complex applications
   description: |
     Hydra is an open-source Python framework that simplifies the development of research and other complex
