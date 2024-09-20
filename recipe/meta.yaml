@@ -52,7 +52,7 @@ test:
   source_files:
     - test-assets/tests
     - test-assets/examples
-    - test-assets/hydra
+    - test-assets/hydra/test_utils
     - test-assets/ATTRIBUTION
     - test-assets/pytest.ini
   commands:
