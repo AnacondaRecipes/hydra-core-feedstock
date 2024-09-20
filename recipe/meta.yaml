@@ -44,7 +44,7 @@ requirements:
     - importlib_resources  # [py<39]
 
 # list tests to be skipped
-{% set tests_to_skip = "" %}  # [win]
+{% set tests_to_skip = "" %}
 # skip all tests on win that use hard coded paths because of slash backslash
 {% set tests_to_skip = tests_to_skip + " test_hydra_output_dir" %}                       # [win]
 {% set tests_to_skip = tests_to_skip + " or test_specializing_config_example" %}         # [win]
