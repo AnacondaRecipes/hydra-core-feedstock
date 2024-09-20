@@ -5,7 +5,7 @@
      def run(self) -> None:
          """Run command."""
 -        root_dir = abspath(dirname(__file__))
-+        root_dir = os.environ['PREFIX']
++        import sys; root_dir = os.environ['LIBRARY_PREFIX'] if sys.platform.startswith('win') else os.environ['PREFIX']
          project_root = abspath(dirname(basename(__file__)))
          for grammar in [
              "hydra/grammar/OverrideLexer.g4",

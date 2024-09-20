@@ -17,8 +17,7 @@ source:
 
 build:
   number: 0
-  script:
-    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   # skipping python 312 since missing antlr4-python3-runtime
   skip: true  # [py>311 or s390x]
   script_env:
@@ -59,7 +58,8 @@ test:
   commands:
     - pip check
     - cd test-assets/tests
-    - pytest -v -W ignore::DeprecationWarning .
+    - pytest -v -W ignore::DeprecationWarning .  # [not win]
+
 about:
   home: https://hydra.cc
   license: MIT
