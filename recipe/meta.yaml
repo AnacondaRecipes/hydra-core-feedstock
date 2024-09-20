@@ -27,7 +27,7 @@ build:
 
 requirements:
   build:
-    - patch  # [not win]
+    - patch     # [not win]
     - m2-patch  # [win]
   host:
     - antlr =={{ antlr_version }}
@@ -42,6 +42,19 @@ requirements:
     - antlr4-python3-runtime =={{ antlr_version }}
     - packaging
     - importlib_resources  # [py<39]
+
+# list tests to be skipped
+{% set tests_to_skip = "" %}  # [win]
+# skip all tests on win that use hard coded paths because of slash backslash
+{% set tests_to_skip = tests_to_skip + " test_hydra_output_dir" %}                       # [win]
+{% set tests_to_skip = tests_to_skip + " or test_specializing_config_example" %}         # [win]
+{% set tests_to_skip = tests_to_skip + " or test_1" %} 
+{% set tests_to_skip = tests_to_skip + " or test_app" %}                                 # [win]
+{% set tests_to_skip = tests_to_skip + " or test_composition_config_example" %}          # [win]
+{% set tests_to_skip = tests_to_skip + " or test_missing_conf_file" %}                   # [win]
+{% set tests_to_skip = tests_to_skip + " or test_hydra_main_rerun" %}                    # [win]
+{% set tests_to_skip = tests_to_skip + " or test_interpolating_dir_hydra_to_app" %}      # [win]
+{% set tests_to_skip = tests_to_skip + " or test_override_with_invalid_group_choice" %}  # [win]
 
 test:
   imports:
@@ -58,7 +71,8 @@ test:
   commands:
     - pip check
     - cd test-assets/tests
-    - pytest -v -W ignore::DeprecationWarning .  # [not win]
+    - pytest -vv -W ignore::DeprecationWarning .  # [not win]
+    - pytest -vv -W ignore::DeprecationWarning . -k "not ({{ tests_to_skip }})"  # [win]
 
 about:
   home: https://hydra.cc
