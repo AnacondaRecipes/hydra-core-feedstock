@@ -1,58 +1,91 @@
 {% set name = "hydra-core" %}
-{% set version = "1.3.1" %}
+{% set version = "1.3.2" %}
+{% set antlr_version = "4.9.3" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://github.com/facebookresearch/hydra/archive/v{{ version }}.tar.gz
-  sha256: 9ba1efe09893853e883498fcbeec17f2a77e1ba551587d6d0604077e02de1602
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
+    patches:
+      - patches/0000-unvendor_antlr.patch
+  - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 3f0f14305e9c6ae4b1dbcba344fe09dd0fc79c0a0656470c249f4f7ca46bf471
+    folder: test-assets
 
 build:
-  noarch: python
   number: 0
-  script:
-    - {{ PYTHON }} setup.py antlr
-    - {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  # skipping python 312 since missing antlr4-python3-runtime
+  skip: true  # [py>311 or s390x]
+  script_env:
+    # this environment variable is used in the antlr-*-complete.jar string inside the
+    # patch to correctly unvendor antlr and use the antlr package from conda
+    - ANTLR_VERSION={{ antlr_version }}
 
 requirements:
   build:
-    - antlr ==4.9.*
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
-    - python >=3.6
+    - antlr =={{ antlr_version }}
+    - python
     - pip
+    - openjdk
+    - wheel
+    - setuptools
   run:
-    - python >=3.6
+    - python
     - omegaconf >=2.2,<2.4
-    - antlr-python-runtime ==4.9.*
+    - antlr4-python3-runtime =={{ antlr_version }}
     - packaging
+    - importlib_resources  # [py<39]
 
-    # importlib_resources is only needed for Python <3.9, but can't
-    # specify that with `noarch`
-    - importlib_resources
+# list tests to be skipped
+{% set tests_to_skip = "" %}
+# skip all tests on win that use hard coded paths because of slash backslash
+{% set tests_to_skip = tests_to_skip + " test_hydra_output_dir" %}                       # [win]
+{% set tests_to_skip = tests_to_skip + " or test_specializing_config_example" %}         # [win]
+{% set tests_to_skip = tests_to_skip + " or test_1" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_app" %}                                 # [win]
+{% set tests_to_skip = tests_to_skip + " or test_composition_config_example" %}          # [win]
+{% set tests_to_skip = tests_to_skip + " or test_missing_conf_file" %}                   # [win]
+{% set tests_to_skip = tests_to_skip + " or test_hydra_main_rerun" %}                    # [win]
+{% set tests_to_skip = tests_to_skip + " or test_interpolating_dir_hydra_to_app" %}      # [win]
+{% set tests_to_skip = tests_to_skip + " or test_override_with_invalid_group_choice" %}  # [win]
 
 test:
   imports:
     - hydra
   requires:
     - pytest
+    - pip
   source_files:
-    - hydra
-    - tests
-    - examples
-    - pytest.ini
-    - ATTRIBUTION
+    - test-assets/tests
+    - test-assets/examples
+    - test-assets/hydra/test_utils
+    - test-assets/ATTRIBUTION
+    - test-assets/pytest.ini
   commands:
-    - pytest -v -W ignore::DeprecationWarning tests/
+    - pip check
+    - cd test-assets/tests
+    - pytest -vv -W ignore::DeprecationWarning .  # [not win]
+    - pytest -vv -W ignore::DeprecationWarning . -k "not ({{ tests_to_skip }})"  # [win]
 
 about:
-  home: https://hydra.cc/
+  home: https://hydra.cc
   license: MIT
   license_family: MIT
   license_file: LICENSE
   summary: A framework for elegantly configuring complex applications
-  doc_url: https://hydra.cc/docs/intro/
+  description: |
+    Hydra is an open-source Python framework that simplifies the development of research and other complex
+    applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and
+    override it through config files and the command line. The name Hydra comes from its ability to run multiple
+    similar jobs - much like a Hydra with multiple heads.
+  doc_url: https://hydra.cc/docs/intro
   dev_url: https://github.com/facebookresearch/hydra
 
 extra:
