@@ -48,7 +48,7 @@ requirements:
 # skip all tests on win that use hard coded paths because of slash backslash
 {% set tests_to_skip = tests_to_skip + " test_hydra_output_dir" %}                       # [win]
 {% set tests_to_skip = tests_to_skip + " or test_specializing_config_example" %}         # [win]
-{% set tests_to_skip = tests_to_skip + " or test_1" %} 
+{% set tests_to_skip = tests_to_skip + " or test_1" %}  # [win]
 {% set tests_to_skip = tests_to_skip + " or test_app" %}                                 # [win]
 {% set tests_to_skip = tests_to_skip + " or test_composition_config_example" %}          # [win]
 {% set tests_to_skip = tests_to_skip + " or test_missing_conf_file" %}                   # [win]
