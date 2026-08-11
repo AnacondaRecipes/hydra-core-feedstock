@@ -1,5 +1,5 @@
 {% set name = "hydra-core" %}
-{% set version = "1.3.2" %}
+{% set version = "1.3.5" %}
 {% set antlr_version = "4.9.3" %}
 
 package:
@@ -7,28 +7,25 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: 8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824
+  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
+    sha256: 71c441eabbde086062045e4d3fce9e26015244f1a4ac721cf3e444c7edf10633
     patches:
       - patches/0000-unvendor_antlr.patch
   - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 3f0f14305e9c6ae4b1dbcba344fe09dd0fc79c0a0656470c249f4f7ca46bf471
+    sha256: 38f9ae3729a6ea7b5a2f6c6e33d42ccc8bb10637587897503815eae60e2bdd95
     folder: test-assets
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
-  # skipping python 312 since missing antlr4-python3-runtime
-  skip: true  # [py>311 or s390x]
+  # skipping python 314 and newer because of incompatibility
+  skip: true  # [py<310 and py>313]
   script_env:
     # this environment variable is used in the antlr-*-complete.jar string inside the
     # patch to correctly unvendor antlr and use the antlr package from conda
     - ANTLR_VERSION={{ antlr_version }}
 
 requirements:
-  build:
-    - patch  # [not win]
-    - m2-patch  # [win]
   host:
     - antlr =={{ antlr_version }}
     - python
@@ -44,23 +41,23 @@ requirements:
     - importlib_resources  # [py<39]
 
 # list tests to be skipped
-{% set tests_to_skip = "" %}
-# skip all tests on win that use hard coded paths because of slash backslash
-{% set tests_to_skip = tests_to_skip + " test_hydra_output_dir" %}                       # [win]
-{% set tests_to_skip = tests_to_skip + " or test_specializing_config_example" %}         # [win]
-{% set tests_to_skip = tests_to_skip + " or test_1" %}  # [win]
-{% set tests_to_skip = tests_to_skip + " or test_app" %}                                 # [win]
-{% set tests_to_skip = tests_to_skip + " or test_composition_config_example" %}          # [win]
-{% set tests_to_skip = tests_to_skip + " or test_missing_conf_file" %}                   # [win]
-{% set tests_to_skip = tests_to_skip + " or test_hydra_main_rerun" %}                    # [win]
-{% set tests_to_skip = tests_to_skip + " or test_interpolating_dir_hydra_to_app" %}      # [win]
-{% set tests_to_skip = tests_to_skip + " or test_override_with_invalid_group_choice" %}  # [win]
-
+{% set tests_to_skip = [
+  "--deselect=test_hydra.py::test_app_with_error_exception_sanitized",
+] %}
+{% set tests_to_skip_313 = [
+  "--deselect=test_hydra.py::test_hydra_deprecation_warning[deprecation_error]",
+  "--deselect=test_utils.py::TestRunAndReport::test_failure[strip_omegaconf_from_bottom_of_stack]"
+] %}
+{% set tests_to_skip_win = [
+  "--deselect=test_compose.py::test_missing_bad_config_dir_error",
+  "--deselect=test_hydra.py::test_app_with_unicode_config",
+  "--deselect=instantiate/test_instantiate.py::test_allowlist_works_for_canonical_os_alias"
+] %}
 test:
   imports:
     - hydra
   requires:
-    - pytest
+    - pytest <8
     - pip
   source_files:
     - test-assets/tests
@@ -71,8 +68,10 @@ test:
   commands:
     - pip check
     - cd test-assets/tests
-    - pytest -vv -W ignore::DeprecationWarning .  # [not win]
-    - pytest -vv -W ignore::DeprecationWarning . -k "not ({{ tests_to_skip }})"  # [win]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip | join(' ') }} # [unix and py<313]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip | join(' ') }} {{ tests_to_skip_313 | join(' ') }} # [unix and py313]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip | join(' ') }} {{ tests_to_skip_win | join(' ') }} # [win and py<313]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip_313 | join(' ') }} {{ tests_to_skip | join(' ') }} {{ tests_to_skip_win | join(' ') }} # [win and py313]
 
 about:
   home: https://hydra.cc
