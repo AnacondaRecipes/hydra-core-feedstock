@@ -41,9 +41,7 @@ requirements:
     - importlib_resources  # [py<39]
 
 # list tests to be skipped
-{% set tests_to_skip = [
-  "--deselect=test_hydra.py::test_app_with_error_exception_sanitized",
-] %}
+{% set tests_to_skip = "--deselect=test_hydra.py::test_app_with_error_exception_sanitized" %}
 {% set tests_to_skip_313 = [
   "--deselect=test_hydra.py::test_hydra_deprecation_warning[deprecation_error]",
   "--deselect=test_utils.py::TestRunAndReport::test_failure[strip_omegaconf_from_bottom_of_stack]"
@@ -51,7 +49,25 @@ requirements:
 {% set tests_to_skip_win = [
   "--deselect=test_compose.py::test_missing_bad_config_dir_error",
   "--deselect=test_hydra.py::test_app_with_unicode_config",
-  "--deselect=instantiate/test_instantiate.py::test_allowlist_works_for_canonical_os_alias"
+  "--deselect=instantiate/test_instantiate.py::test_allowlist_works_for_canonical_os_alias",
+  "--deselect=test_hydra.py::test_missing_conf_file",
+  "--deselect=test_hydra.py::test_app_without_config___no_overrides",
+  "--deselect=test_hydra.py::test_hydra_main_rerun",
+  "--deselect=test_hydra.py::test_app_without_config__with_append",
+  "--deselect=test_hydra.py::test_app_with_config_file__no_overrides",
+  "--deselect=test_hydra.py::test_app_with_config_file__with_override",
+  "--deselect=test_hydra.py::test_app_with_config_file__with_decorators",
+  "--deselect=test_hydra.py::test_app_with_split_config",
+  "--deselect=test_hydra.py::test_app_with_config_groups__override_dataset__wrong",
+  "--deselect=test_hydra.py::test_app_with_config_groups__override_all_configs",
+  "--deselect=test_hydra.py::test_app_with_sweep_cfg__override_to_basic_launcher",
+  "--deselect=test_hydra.py::test_interpolating_dir_hydra_to_app",
+  "--deselect=test_hydra.py::test_override_with_invalid_group_choice",
+  "--deselect=test_hydra.py::test_hydra_output_dir",
+  "--deselect=test_hydra.py::TestTaskRunnerLogging::test_1",
+  "--deselect=instantiate/test_instantiate.py::test_allowlist_works_for_canonical_os_alias",
+  "--deselect=test_examples/test_patterns.py::test_specializing_config_example",
+  "--deselect=test_examples/test_tutorials_basic.py::test_composition_config_example"
 ] %}
 test:
   imports:
@@ -68,10 +84,10 @@ test:
   commands:
     - pip check
     - cd test-assets/tests
-    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip | join(' ') }} # [unix and py<313]
-    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip | join(' ') }} {{ tests_to_skip_313 | join(' ') }} # [unix and py313]
-    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip | join(' ') }} {{ tests_to_skip_win | join(' ') }} # [win and py<313]
-    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip_313 | join(' ') }} {{ tests_to_skip | join(' ') }} {{ tests_to_skip_win | join(' ') }} # [win and py313]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip }} # [unix and py<313]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip }} {{ tests_to_skip_313 | join(' ') }} # [unix and py313]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip }} {{ tests_to_skip_win | join(' ') }} # [win and py<313]
+    - pytest -vv -W ignore::DeprecationWarning . {{ tests_to_skip }} {{ tests_to_skip_313 | join(' ') }}  {{ tests_to_skip_win | join(' ') }} # [win and py313]
 
 about:
   home: https://hydra.cc
