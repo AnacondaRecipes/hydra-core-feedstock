@@ -1,18 +1,18 @@
 {% set name = "hydra-core" %}
-{% set version = "1.3.5" %}
+{% set version = "1.3.7" %}
 {% set antlr_version = "4.9.3" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
-    sha256: 71c441eabbde086062045e4d3fce9e26015244f1a4ac721cf3e444c7edf10633
+    sha256: d4ff629c7e23b64a9db5fe5b027cf7c55b633b737f03be51ef41b77ed016f75e
     patches:
       - patches/0000-unvendor_antlr.patch
   - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 38f9ae3729a6ea7b5a2f6c6e33d42ccc8bb10637587897503815eae60e2bdd95
+    sha256: c613c83dab7552fa5cfb78d774a0a0d5e2b3f982e1775d0487ff3b66d124d1fc
     folder: test-assets
 
 build:
@@ -34,11 +34,13 @@ requirements:
     - wheel
     - setuptools
   run:
+    # Upstream source: https://github.com/hydra-ecosystem/hydra/blob/v1.3.7/requirements/requirements.txt
     - python
     - omegaconf >=2.2,<2.4
     - antlr4-python3-runtime =={{ antlr_version }}
     - packaging
     - importlib_resources  # [py<39]
+    - packaging
 
 # list tests to be skipped
 {% set tests_to_skip = "--deselect=tests/test_hydra.py::test_app_with_error_exception_sanitized" %}
