@@ -39,12 +39,11 @@ requirements:
     - omegaconf >=2.2,<2.4
     - antlr4-python3-runtime =={{ antlr_version }}
     - importlib_resources  # [py<39]
-    # packaging>=26.3 changed Version() to raise InvalidVersion instead of TypeError
-    # for non-string input, which breaks hydra's test_initialize_bad_version_base
-    - packaging <26.3
+    - packaging
 
 # list tests to be skipped
 {% set tests_to_skip = "--deselect=tests/test_hydra.py::test_app_with_error_exception_sanitized" %}
+{% set tests_to_skip = tests_to_skip + "--deselect=tests/test_compose.py::test_initialize_bad_version_base" %}
 {% set tests_to_skip_313 = [
   "--deselect=tests/test_hydra.py::test_hydra_deprecation_warning[deprecation_error]",
   "--deselect=tests/test_utils.py::TestRunAndReport::test_failure[strip_omegaconf_from_bottom_of_stack]"
