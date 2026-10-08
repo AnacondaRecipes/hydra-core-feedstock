@@ -43,7 +43,7 @@ requirements:
 
 # list tests to be skipped
 {% set tests_to_skip = "--deselect=tests/test_hydra.py::test_app_with_error_exception_sanitized" %}
-{% set tests_to_skip = tests_to_skip + "--deselect=tests/test_compose.py::test_initialize_bad_version_base" %}
+{% set tests_to_skip = tests_to_skip + " --deselect=tests/test_compose.py::test_initialize_bad_version_base" %}
 {% set tests_to_skip_313 = [
   "--deselect=tests/test_hydra.py::test_hydra_deprecation_warning[deprecation_error]",
   "--deselect=tests/test_utils.py::TestRunAndReport::test_failure[strip_omegaconf_from_bottom_of_stack]"
