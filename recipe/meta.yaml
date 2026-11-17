@@ -1,5 +1,5 @@
 {% set name = "hydra-core" %}
-{% set version = "1.3.7" %}
+{% set version = "1.3.8" %}
 {% set antlr_version = "4.9.3" %}
 
 package:
@@ -8,11 +8,11 @@ package:
 
 source:
   - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
-    sha256: d4ff629c7e23b64a9db5fe5b027cf7c55b633b737f03be51ef41b77ed016f75e
+    sha256: 18d5dfb841734a936507e75e7b8390b406ed22494f7fb8b4b7b7c122102de3d5
     patches:
       - patches/0000-unvendor_antlr.patch
   - url: https://github.com/facebookresearch/hydra/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: c613c83dab7552fa5cfb78d774a0a0d5e2b3f982e1775d0487ff3b66d124d1fc
+    sha256: 17635a76fc89670941e49d9870eb20d01112c9ac0518979f01a5230962022ec6
     folder: test-assets
 
 build:
